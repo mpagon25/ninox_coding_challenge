@@ -1,8 +1,14 @@
 import { useState, useEffect } from 'react';
 import { fetchGifs } from '../services/giphyService';
+import { GIFObject } from 'giphy-api';
 
-const useFetchGifs = (apiUrl: string, apiKey: string) => {
-  const [data, setData] = useState(null);
+interface FetchGifsHookResult {
+  data: GIFObject[] | null;
+  isLoading: boolean;
+  error: string | null;
+}
+const useFetchGifs = (apiUrl: string, apiKey: string): FetchGifsHookResult => {
+  const [data, setData] = useState<GIFObject[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
