@@ -11,6 +11,6 @@
       "@hooks/*": ["src/hooks/*"],
       "@services/*": ["src/services/*"]
     },
-    "types": ["node"]
+    "types": ["vitest/globals", "node"]
   }
 }
