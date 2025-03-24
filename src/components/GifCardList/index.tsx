@@ -1,17 +1,28 @@
-import { GIFObject } from 'giphy-api';
 import { useRef, useState, KeyboardEvent, useEffect } from 'react';
+import { GIFObject } from 'giphy-api';
+import { GifCard } from '../GifCard';
 import { StyledGridLayout } from './styles';
-import GifCard from '@components/GifCard';
 
-type GifCardListProps = {
+interface GifCardListProps {
   gifs: GIFObject[];
   onGifSelect: (gif: GIFObject) => void;
-};
+  onLoadMore: () => void;
+  hasMore: boolean;
+  isLoading: boolean;
+}
 
-export const GifCardList = ({ gifs, onGifSelect }: GifCardListProps) => {
+export const GifCardList = ({
+  gifs,
+  onGifSelect,
+  onLoadMore,
+  hasMore,
+  isLoading,
+}: GifCardListProps) => {
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const gridRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const lastCardRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     gridRef.current?.focus();
@@ -35,8 +46,38 @@ export const GifCardList = ({ gifs, onGifSelect }: GifCardListProps) => {
     }
   }, [selectedIndex]);
 
+  useEffect(() => {
+    if (isLoading || !hasMore) return;
+
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          onLoadMore();
+        }
+      },
+      { threshold: 0.1 },
+    );
+
+    if (lastCardRef.current) {
+      observerRef.current.observe(lastCardRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [isLoading, hasMore, onLoadMore]);
+
   const setCardRef = (index: number) => (el: HTMLDivElement | null) => {
     cardRefs.current[index] = el;
+    if (index === gifs.length - 1) {
+      lastCardRef.current = el;
+    }
   };
 
   const handleKeyDown = (event: KeyboardEvent) => {
@@ -121,5 +162,3 @@ export const GifCardList = ({ gifs, onGifSelect }: GifCardListProps) => {
     </StyledGridLayout>
   );
 };
-
-export default GifCardList;

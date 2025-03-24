@@ -1,16 +1,19 @@
-import { GIFObject } from 'giphy-api';
 import { useState } from 'react';
-import useFetchGifs from '@hooks/useFetchGifs';
-import { LoadingSpinner } from '@components/LoadingSpinner/index.';
+import { GifCardList } from '@components/GifCardList';
+import { GifModal } from '@components/GifModal';
 import { Header } from '@components/Header';
-import GifCardList from '@components/GifCardList';
-import GifModal from '@components/GifModal';
+import useFetchGifs from '@hooks/useFetchGifs';
+import { GIFObject } from 'giphy-api';
+import { LoadingSpinner } from '@components/LoadingSpinner';
 
 const App = () => {
   const API_KEY = import.meta.env.VITE_GIPHY_API_KEY;
   const API_URL = import.meta.env.VITE_GIPHY_API_URL;
 
-  const { data, isLoading, error } = useFetchGifs(API_URL, API_KEY);
+  const { data, isLoading, error, loadMore, hasMore } = useFetchGifs(
+    API_URL,
+    API_KEY,
+  );
   const [selectedGif, setSelectedGif] = useState<GIFObject | null>(null);
 
   const openGifModal = (gif: GIFObject) => {
@@ -21,7 +24,7 @@ const App = () => {
     setSelectedGif(null);
   };
 
-  if (isLoading) {
+  if (isLoading && !data) {
     return <LoadingSpinner />;
   }
 
@@ -41,6 +44,9 @@ const App = () => {
         onGifSelect={(gif) => {
           return selectedGif ? closeGifModal() : openGifModal(gif);
         }}
+        onLoadMore={loadMore}
+        hasMore={hasMore}
+        isLoading={isLoading}
       />
       {selectedGif && <GifModal onClose={closeGifModal} gif={selectedGif} />}
     </main>

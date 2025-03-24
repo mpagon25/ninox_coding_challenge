@@ -17,10 +17,16 @@ export interface FetchGifsResults {
 export const fetchGifs = async (
   apiUrl: string,
   apiKey: string,
+  offset: number = 0,
+  limit: number = 25,
 ): Promise<FetchGifsResults> => {
-  const response = await fetch(`${apiUrl}?api_key=${apiKey}`);
+  const response = await fetch(
+    `${apiUrl}?api_key=${apiKey}&offset=${offset}&limit=${limit}&rating=g&bundle=messaging_non_clips`,
+  );
+
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
+
   return response.json();
 };

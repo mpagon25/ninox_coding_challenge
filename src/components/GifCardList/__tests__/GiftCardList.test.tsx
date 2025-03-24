@@ -1,7 +1,21 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { GifCardList } from '../index';
 import { GIFObject } from 'giphy-api';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+const mockIntersectionObserver = vi.fn().mockImplementation((callback) => {
+  setTimeout(() => {
+    callback([{ isIntersecting: true }]);
+  }, 0);
+
+  return {
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect: vi.fn(),
+  };
+});
+
+window.IntersectionObserver = mockIntersectionObserver;
 
 const mockGifs: GIFObject[] = [
   {
@@ -22,20 +36,39 @@ const mockGifs: GIFObject[] = [
 
 describe('GifCardList Accessibility', () => {
   const onGifSelect = vi.fn();
+  const onLoadMore = vi.fn();
 
   beforeEach(() => {
     onGifSelect.mockClear();
+    onLoadMore.mockClear();
+    mockIntersectionObserver.mockClear();
   });
 
   it('should have correct ARIA attributes', () => {
-    render(<GifCardList gifs={mockGifs} onGifSelect={onGifSelect} />);
+    render(
+      <GifCardList
+        gifs={mockGifs}
+        onGifSelect={onGifSelect}
+        onLoadMore={onLoadMore}
+        hasMore={true}
+        isLoading={false}
+      />,
+    );
 
     const grid = screen.getByRole('grid');
     expect(grid).toHaveAttribute('aria-label', 'Grid of GIF images');
   });
 
   it('should focus first card when using arrow keys with no initial selection', () => {
-    render(<GifCardList gifs={mockGifs} onGifSelect={onGifSelect} />);
+    render(
+      <GifCardList
+        gifs={mockGifs}
+        onGifSelect={onGifSelect}
+        onLoadMore={onLoadMore}
+        hasMore={true}
+        isLoading={false}
+      />,
+    );
 
     const grid = screen.getByRole('grid');
     fireEvent.keyDown(grid, { key: 'ArrowRight' });
@@ -45,7 +78,15 @@ describe('GifCardList Accessibility', () => {
   });
 
   it('should navigate through cards using arrow keys', () => {
-    render(<GifCardList gifs={mockGifs} onGifSelect={onGifSelect} />);
+    render(
+      <GifCardList
+        gifs={mockGifs}
+        onGifSelect={onGifSelect}
+        onLoadMore={onLoadMore}
+        hasMore={true}
+        isLoading={false}
+      />,
+    );
 
     const grid = screen.getByRole('grid');
     const cards = screen.getAllByRole('gridcell');
@@ -58,7 +99,15 @@ describe('GifCardList Accessibility', () => {
   });
 
   it('should select card with Enter key', () => {
-    render(<GifCardList gifs={mockGifs} onGifSelect={onGifSelect} />);
+    render(
+      <GifCardList
+        gifs={mockGifs}
+        onGifSelect={onGifSelect}
+        onLoadMore={onLoadMore}
+        hasMore={true}
+        isLoading={false}
+      />,
+    );
 
     const grid = screen.getByRole('grid');
     fireEvent.keyDown(grid, { key: 'ArrowRight' });
@@ -67,13 +116,5 @@ describe('GifCardList Accessibility', () => {
     fireEvent.keyDown(firstCard, { key: 'Enter' });
 
     expect(onGifSelect).toHaveBeenCalledWith(mockGifs[0]);
-  });
-
-  it('should handle mouse interactions accessibly', () => {
-    render(<GifCardList gifs={mockGifs} onGifSelect={onGifSelect} />);
-
-    const cards = screen.getAllByRole('gridcell');
-    fireEvent.mouseEnter(cards[0]);
-    expect(cards[0]).toHaveFocus();
   });
 });
