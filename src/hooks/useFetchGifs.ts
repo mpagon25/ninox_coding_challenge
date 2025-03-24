@@ -1,5 +1,5 @@
+import { fetchGifs, FetchGifsResults } from '@services/giphyService';
 import { useState, useEffect } from 'react';
-import { fetchGifs, FetchGifsResults } from '../services/giphyService';
 
 interface UseFetchGifsResult {
   data: FetchGifsResults | null;

@@ -1,7 +1,7 @@
 import { GIFObject } from 'giphy-api';
-import { GifCard } from '../GifCard';
 import { useRef, useState, KeyboardEvent, useEffect } from 'react';
 import { StyledGridLayout } from './styles';
+import GifCard from '@components/GifCard';
 
 type GifCardListProps = {
   gifs: GIFObject[];

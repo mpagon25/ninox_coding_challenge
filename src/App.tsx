@@ -1,10 +1,10 @@
-import { GifCardList } from './components/GifCardList';
-import useFetchGifs from './hooks/useFetchGifs';
 import { GIFObject } from 'giphy-api';
 import { useState } from 'react';
-import { GifModal } from './components/GifModal';
-import Header from './components/Header';
-import LoadingSpinner from './components/LoadingSpinner/index.';
+import useFetchGifs from '@hooks/useFetchGifs';
+import { LoadingSpinner } from '@components/LoadingSpinner/index.';
+import { Header } from '@components/Header';
+import GifCardList from '@components/GifCardList';
+import GifModal from '@components/GifModal';
 
 const App = () => {
   const API_KEY = import.meta.env.VITE_GIPHY_API_KEY;

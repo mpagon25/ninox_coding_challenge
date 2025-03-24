@@ -1,7 +1,7 @@
 import { ClipLoader } from 'react-spinners';
 import { Spinner } from './styles';
 
-const LoadingSpinner = () => {
+export const LoadingSpinner = () => {
   return (
     <Spinner.Wrapper role="status" aria-live="polite">
       <Spinner.ContentWrapper>
@@ -11,5 +11,3 @@ const LoadingSpinner = () => {
     </Spinner.Wrapper>
   );
 };
-
-export default LoadingSpinner;

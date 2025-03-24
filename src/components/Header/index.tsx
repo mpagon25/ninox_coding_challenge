@@ -1,11 +1,9 @@
 import { StyledHeader } from './styles';
 
-const Header = () => {
+export const Header = () => {
   return (
     <StyledHeader>
       <h1>GIF Gallery</h1>
     </StyledHeader>
   );
 };
-
-export default Header;
