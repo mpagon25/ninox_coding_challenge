@@ -13,11 +13,15 @@ export const GifCardList = ({ gifs, onGifSelect }: GifCardListProps) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
+  useEffect(() => {
+    gridRef.current?.focus();
+  }, []);
+
   const getNumColumns = () => {
     if (!gridRef.current) return 1;
     const gridWidth = gridRef.current.clientWidth;
-    const cardWidth = 160; // min-width of card
-    const gap = 16; // 1rem gap
+    const cardWidth = 160;
+    const gap = 16;
     return Math.floor((gridWidth + gap) / (cardWidth + gap));
   };
 
@@ -36,7 +40,6 @@ export const GifCardList = ({ gifs, onGifSelect }: GifCardListProps) => {
   };
 
   const handleKeyDown = (event: KeyboardEvent) => {
-    // If no card is selected, select the first one on any arrow key
     if (selectedIndex === -1) {
       if (
         ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(event.key)
@@ -99,7 +102,7 @@ export const GifCardList = ({ gifs, onGifSelect }: GifCardListProps) => {
       role="grid"
       aria-label="Grid of GIF images"
       onKeyDown={handleKeyDown}
-      tabIndex={-1}
+      tabIndex={selectedIndex === -1 ? 0 : -1}
     >
       {gifs.map((gif, index) => (
         <GifCard
