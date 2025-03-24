@@ -1,9 +1,10 @@
-import styled from 'styled-components';
 import { GifCardList } from './components/GifCardList';
 import useFetchGifs from './hooks/useFetchGifs';
 import { GIFObject } from 'giphy-api';
 import { useState } from 'react';
 import { GifModal } from './components/GifModal';
+import Header from './components/Header';
+import LoadingSpinner from './components/LoadingSpinner/index.';
 
 const App = () => {
   const API_KEY = import.meta.env.VITE_GIPHY_API_KEY;
@@ -21,7 +22,7 @@ const App = () => {
   };
 
   if (isLoading) {
-    return <p role="status">Loading...</p>;
+    return <LoadingSpinner />;
   }
 
   if (error) {
@@ -34,9 +35,7 @@ const App = () => {
 
   return (
     <main>
-      <StyledHeader>
-        <h1>GIF Gallery</h1>
-      </StyledHeader>
+      <Header />
       <GifCardList
         gifs={data.data}
         onGifSelect={(gif) => {
@@ -47,18 +46,5 @@ const App = () => {
     </main>
   );
 };
-
-const StyledHeader = styled.header`
-  background-color: #272727;
-  padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-  h1 {
-    color: white;
-    font-size: 1.5rem;
-    font-weight: bold;
-    text-align: center;
-  }
-`;
 
 export default App;
