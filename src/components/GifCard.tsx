@@ -3,18 +3,17 @@ import styled from 'styled-components';
 
 type GifCardProps = {
   gif: GIFObject;
+  onClick: (gif: GIFObject) => void;
 };
 
-export const GifCard = ({ gif }: GifCardProps) => {
-  return (
-    <StyledGif.Card>
-      <StyledGif.Image src={gif.images.original.url} alt={gif.title} />
-      <StyledGif.TitleContainer>
-        <StyledGif.Title>{gif.title}</StyledGif.Title>
-      </StyledGif.TitleContainer>
-    </StyledGif.Card>
-  );
-};
+export const GifCard = ({ gif, onClick }: GifCardProps) => (
+  <StyledGif.Card onClick={() => onClick(gif)}>
+    <StyledGif.Image src={gif.images.original.url} alt={gif.title} />
+    <StyledGif.TitleContainer>
+      <StyledGif.Title>{gif.title}</StyledGif.Title>
+    </StyledGif.TitleContainer>
+  </StyledGif.Card>
+);
 
 const StyledGif = {
   Card: styled.div`
@@ -51,9 +50,7 @@ const StyledGif = {
   `,
   Title: styled.p`
     font-size: 0.75rem;
-    font-family:
-      'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
-      'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+
     font-weight: bold;
     color: white;
     text-align: left;

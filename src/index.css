@@ -107,6 +107,10 @@ section {
 }
 body {
   line-height: 1;
+  background-color: rgb(202, 202, 202);
+  font-family:
+    'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
+    'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 ol,
 ul {
