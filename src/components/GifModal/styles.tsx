@@ -1,27 +1,7 @@
 import styled from 'styled-components';
-import { GIFObject } from 'giphy-api';
 import { IoCloseSharp } from 'react-icons/io5';
 
-type GifModalProps = {
-  onClose: () => void;
-  gif: GIFObject;
-};
-
-export const GifModal = ({ onClose, gif }: GifModalProps) => {
-  return (
-    <StyledGif.Backdrop onClick={onClose}>
-      <StyledGif.Modal onClick={(e) => e.stopPropagation()}>
-        <StyledGif.TopMenu>
-          <StyledGif.CloseIcon onClick={onClose} />
-          <StyledGif.TopMenuTitle>{gif.title}</StyledGif.TopMenuTitle>
-        </StyledGif.TopMenu>
-        <StyledGif.Image src={gif.images.original.url} alt={gif.title} />
-      </StyledGif.Modal>
-    </StyledGif.Backdrop>
-  );
-};
-
-const StyledGif = {
+export const StyledGif = {
   Backdrop: styled.div`
     display: grid;
     place-items: center;
@@ -43,6 +23,10 @@ const StyledGif = {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+
+    &:focus {
+      outline: none;
+    }
   `,
   TopMenu: styled.div`
     display: flex;
@@ -58,10 +42,30 @@ const StyledGif = {
     font-size: 1.5rem;
     margin: 0;
   `,
+  CloseButton: styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: white;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+
+    &:hover,
+    &:focus {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    &:focus {
+      outline: 2px solid #007bff;
+      outline-offset: 2px;
+    }
+  `,
   CloseIcon: styled(IoCloseSharp)`
     font-size: 2rem;
-    color: white;
-    cursor: pointer;
   `,
   Image: styled.img`
     width: 100%;

@@ -1,36 +1,35 @@
-import { GIFObject } from 'giphy-api';
 import styled from 'styled-components';
 
-type GifCardProps = {
-  gif: GIFObject;
-  onClick: (gif: GIFObject) => void;
-};
-
-export const GifCard = ({ gif, onClick }: GifCardProps) => (
-  <StyledGif.Card onClick={() => onClick(gif)}>
-    <StyledGif.Image src={gif.images.original.url} alt={gif.title} />
-    <StyledGif.TitleContainer>
-      <StyledGif.Title>{gif.title}</StyledGif.Title>
-    </StyledGif.TitleContainer>
-  </StyledGif.Card>
-);
-
-const StyledGif = {
-  Card: styled.div`
+export const StyledGif = {
+  Card: styled.div<{ 'aria-selected': boolean }>`
     display: grid;
     grid-template-areas:
       'image'
       'title';
     grid-template-rows: 60% 40%;
     aspect-ratio: 1 / 1;
-    background-color: grey;
+    background-color: #272727;
     border-radius: 10px;
     overflow: hidden;
     min-width: 160px;
     box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
-    &:hover {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+
+    &:hover,
+    &:focus {
       transform: scale(1.05);
-      transition: transform 0.3s;
+    }
+
+    ${(props) =>
+      props['aria-selected'] &&
+      `
+      outline: 3px solid #007bff;
+      outline-offset: -3px;
+    `}
+
+    &:focus:not(:focus-visible) {
+      outline: none;
     }
   `,
   Image: styled.img`
@@ -50,7 +49,6 @@ const StyledGif = {
   `,
   Title: styled.p`
     font-size: 0.75rem;
-
     font-weight: bold;
     color: white;
     text-align: left;

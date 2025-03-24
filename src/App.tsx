@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { GifCard } from './components/GifCard';
+import { GifCardList } from './components/GifCardList';
 import useFetchGifs from './hooks/useFetchGifs';
 import { GIFObject } from 'giphy-api';
 import { useState } from 'react';
@@ -10,7 +10,6 @@ const App = () => {
   const API_URL = import.meta.env.VITE_GIPHY_API_URL;
 
   const { data, isLoading, error } = useFetchGifs(API_URL, API_KEY);
-
   const [selectedGif, setSelectedGif] = useState<GIFObject | null>(null);
 
   const openGifModal = (gif: GIFObject) => {
@@ -22,42 +21,44 @@ const App = () => {
   };
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <p role="status">Loading...</p>;
   }
 
   if (error) {
-    return <p>Error: {error}</p>;
+    return <p role="alert">Error: {error}</p>;
   }
 
   if (!data || (Array.isArray(data.data) && data.data.length === 0)) {
-    return <p>No results found.</p>;
+    return <p role="status">No results found.</p>;
   }
 
   return (
-    <>
-      <StyledGridLayout>
-        {data?.data.map((item) => (
-          <GifCard
-            onClick={(gif) => {
-              return selectedGif ? closeGifModal() : openGifModal(gif);
-            }}
-            gif={item}
-          />
-        ))}
-      </StyledGridLayout>
-      {selectedGif ? (
-        <GifModal onClose={closeGifModal} gif={selectedGif} />
-      ) : null}
-    </>
+    <main>
+      <StyledHeader>
+        <h1>GIF Gallery</h1>
+      </StyledHeader>
+      <GifCardList
+        gifs={data.data}
+        onGifSelect={(gif) => {
+          return selectedGif ? closeGifModal() : openGifModal(gif);
+        }}
+      />
+      {selectedGif && <GifModal onClose={closeGifModal} gif={selectedGif} />}
+    </main>
   );
 };
 
-export default App;
-
-const StyledGridLayout = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 1rem;
+const StyledHeader = styled.header`
+  background-color: #272727;
   padding: 1rem;
-  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  h1 {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+  }
 `;
+
+export default App;
