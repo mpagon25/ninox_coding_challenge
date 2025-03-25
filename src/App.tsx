@@ -1,6 +1,8 @@
 import { LandingPage } from '@pages/LandingPage';
 import { Header } from '@components/Header';
 import { useState, useCallback } from 'react';
+import { Routes, Route } from 'react-router';
+import GifRoute from '@routes/gif';
 
 const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -13,7 +15,10 @@ const App = () => {
     <>
       <Header onSearch={handleSearch} />
       <main>
-        <LandingPage searchQuery={searchQuery} />
+        <Routes>
+          <Route path="/" element={<LandingPage searchQuery={searchQuery} />} />
+          <Route path="/gif/:id" element={<GifRoute />} />
+        </Routes>
       </main>
     </>
   );

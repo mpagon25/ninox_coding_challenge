@@ -14,30 +14,37 @@ export interface FetchGifsResults {
   };
 }
 
+const API_KEY = import.meta.env.VITE_GIPHY_API_KEY;
+const API_URL = import.meta.env.VITE_GIPHY_API_URL;
+
 export const fetchGifs = async (
-  apiUrl: string,
-  apiKey: string,
   offset: number = 0,
   limit: number = 25,
-  searchQuery?: string,
 ): Promise<FetchGifsResults> => {
   const params = new URLSearchParams({
-    api_key: apiKey,
+    api_key: API_KEY,
     offset: offset.toString(),
     limit: limit.toString(),
     rating: 'g',
     bundle: 'messaging_non_clips',
   });
 
-  if (searchQuery) {
-    params.append('q', searchQuery);
-  }
-
-  const response = await fetch(`${apiUrl}?${params}`);
+  const response = await fetch(`${API_URL}/trending?${params}`);
 
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
   return response.json();
+};
+
+export const fetchGifById = async (id: string): Promise<GIFObject> => {
+  const response = await fetch(`${API_URL}/${id}?api_key=${API_KEY}`);
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const result = await response.json();
+  return result.data;
 };

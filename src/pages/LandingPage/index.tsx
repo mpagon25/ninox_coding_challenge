@@ -1,7 +1,7 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router';
 import { GifCardList } from '@components/GifCardList';
 import { LoadingSpinner } from '@components/LoadingSpinner';
-import { GifModal } from '@components/GifModal';
 import { GIFObject } from 'giphy-api';
 import useFetchGifs from '@hooks/useFetchGifs';
 import { StyledLandingPageContent } from './styles';
@@ -11,20 +11,14 @@ interface LandingPageProps {
 }
 
 export const LandingPage = ({ searchQuery }: LandingPageProps) => {
-  const API_KEY = import.meta.env.VITE_GIPHY_API_KEY;
-  const API_URL = import.meta.env.VITE_GIPHY_API_URL;
-
-  const [selectedGif, setSelectedGif] = useState<GIFObject | null>(null);
-  const { data, isLoading, error, loadMore, hasMore, loadAllForSearch } =
-    useFetchGifs(API_URL, API_KEY);
+  const navigate = useNavigate();
+  const { data, isLoading, error, loadMore, hasMore } =
+    useFetchGifs(searchQuery);
 
   const filteredGifs = useMemo(() => {
     if (!data) return [];
-    const query = searchQuery.toLowerCase().trim();
-    return query
-      ? data.data.filter((gif) => gif.title.toLowerCase().includes(query))
-      : data.data;
-  }, [data, searchQuery]);
+    return data.data;
+  }, [data]);
 
   const handleLoadMore = useCallback(() => {
     if (!searchQuery) {
@@ -33,18 +27,8 @@ export const LandingPage = ({ searchQuery }: LandingPageProps) => {
     return Promise.resolve();
   }, [searchQuery, loadMore]);
 
-  useEffect(() => {
-    if (searchQuery.trim() && hasMore) {
-      loadAllForSearch();
-    }
-  }, [searchQuery, hasMore, loadAllForSearch]);
-
-  const openGifModal = (gif: GIFObject) => {
-    setSelectedGif(gif);
-  };
-
-  const closeGifModal = () => {
-    setSelectedGif(null);
+  const handleGifSelect = (gif: GIFObject) => {
+    navigate(`/gif/${gif.id}`);
   };
 
   if (isLoading && !data) {
@@ -63,14 +47,11 @@ export const LandingPage = ({ searchQuery }: LandingPageProps) => {
     <StyledLandingPageContent>
       <GifCardList
         gifs={filteredGifs}
-        onGifSelect={(gif) => {
-          return selectedGif ? closeGifModal() : openGifModal(gif);
-        }}
+        onGifSelect={handleGifSelect}
         onLoadMore={handleLoadMore}
         hasMore={!searchQuery && hasMore}
         isLoading={isLoading}
       />
-      {selectedGif && <GifModal onClose={closeGifModal} gif={selectedGif} />}
     </StyledLandingPageContent>
   );
 };

@@ -8,10 +8,9 @@ interface UseFetchGifsResult {
   error: string | null;
   loadMore: () => Promise<void>;
   hasMore: boolean;
-  loadAllForSearch: () => Promise<void>;
 }
 
-const useFetchGifs = (apiUrl: string, apiKey: string): UseFetchGifsResult => {
+const useFetchGifs = (searchQuery: string = ''): UseFetchGifsResult => {
   const [allGifs, setAllGifs] = useState<GIFObject[]>([]);
   const [paginationData, setPaginationData] = useState<
     FetchGifsResults['pagination'] | null
@@ -21,47 +20,43 @@ const useFetchGifs = (apiUrl: string, apiKey: string): UseFetchGifsResult => {
   const [offset, setOffset] = useState(0);
   const limit = 25;
 
-  const fetchData = useCallback(
-    async (currentOffset: number) => {
-      try {
-        setIsLoading(true);
-        const result = await fetchGifs(apiUrl, apiKey, currentOffset, limit);
-
-        setAllGifs((prevGifs) =>
-          currentOffset === 0 ? result.data : [...prevGifs, ...result.data],
-        );
-        setPaginationData(result.pagination);
-        setError(null);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [apiUrl, apiKey],
-  );
-
-  const loadAllForSearch = useCallback(async () => {
-    if (!paginationData) return;
-
-    const totalGifs = paginationData.total_count;
-    const remainingBatches = Math.ceil((totalGifs - allGifs.length) / limit);
-
+  const fetchData = useCallback(async (currentOffset: number) => {
     try {
       setIsLoading(true);
+      const result = await fetchGifs(currentOffset, limit);
 
-      for (let i = 0; i < remainingBatches; i++) {
-        const nextOffset = offset + (i + 1) * limit;
-        const result = await fetchGifs(apiUrl, apiKey, nextOffset, limit);
-        setAllGifs((prevGifs) => [...prevGifs, ...result.data]);
-      }
+      setAllGifs((prevGifs) =>
+        currentOffset === 0 ? result.data : [...prevGifs, ...result.data],
+      );
+      setPaginationData(result.pagination);
+      setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setIsLoading(false);
     }
-  }, [apiUrl, apiKey, paginationData, allGifs.length, offset, limit]);
+  }, []);
 
+  // const loadAllForSearch = useCallback(async () => {
+  //   if (!paginationData) return;
+
+  //   const totalGifs = paginationData.total_count;
+  //   const remainingBatches = Math.ceil((totalGifs - allGifs.length) / limit);
+
+  //   try {
+  //     setIsLoading(true);
+
+  //     for (let i = 0; i < remainingBatches; i++) {
+  //       const nextOffset = offset + (i + 1) * limit;
+  //       const result = await fetchGifs(apiUrl, apiKey, nextOffset, limit);
+  //       setAllGifs((prevGifs) => [...prevGifs, ...result.data]);
+  //     }
+  //   } catch (err) {
+  //     setError(err instanceof Error ? err.message : 'An error occurred');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }, [apiUrl, apiKey, paginationData, allGifs.length, offset, limit]);
   const loadMore = useCallback(async () => {
     if (isLoading || !paginationData) return;
     const nextOffset = offset + limit;
@@ -70,6 +65,7 @@ const useFetchGifs = (apiUrl: string, apiKey: string): UseFetchGifsResult => {
   }, [isLoading, paginationData, offset, limit, fetchData]);
 
   useEffect(() => {
+    setOffset(0);
     fetchData(0);
   }, [fetchData]);
 
@@ -78,7 +74,11 @@ const useFetchGifs = (apiUrl: string, apiKey: string): UseFetchGifsResult => {
   const data: FetchGifsResults | null =
     allGifs.length > 0
       ? {
-          data: allGifs,
+          data: searchQuery.trim()
+            ? allGifs.filter((gif) =>
+                gif.title.toLowerCase().includes(searchQuery.toLowerCase()),
+              )
+            : allGifs,
           pagination: paginationData!,
           meta: {
             status: 200,
@@ -88,7 +88,7 @@ const useFetchGifs = (apiUrl: string, apiKey: string): UseFetchGifsResult => {
         }
       : null;
 
-  return { data, isLoading, error, loadMore, hasMore, loadAllForSearch };
+  return { data, isLoading, error, loadMore, hasMore };
 };
 
 export default useFetchGifs;
