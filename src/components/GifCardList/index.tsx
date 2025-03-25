@@ -1,15 +1,15 @@
 import { useRef, useState, KeyboardEvent, useEffect } from 'react';
 import { GIFObject } from 'giphy-api';
 import { GifCard } from '../GifCard';
-import { StyledGridLayout } from './styles';
+import { StyledGifCardGrid } from './styles';
 
-interface GifCardListProps {
+type GifCardListProps = {
   gifs: GIFObject[];
   onGifSelect: (gif: GIFObject) => void;
   onLoadMore: () => void;
   hasMore: boolean;
   isLoading: boolean;
-}
+};
 
 export const GifCardList = ({
   gifs,
@@ -138,7 +138,7 @@ export const GifCardList = ({
   };
 
   return (
-    <StyledGridLayout
+    <StyledGifCardGrid
       ref={gridRef}
       role="grid"
       aria-label="Grid of GIF images"
@@ -159,6 +159,6 @@ export const GifCardList = ({
           tabIndex={index === selectedIndex ? 0 : -1}
         />
       ))}
-    </StyledGridLayout>
+    </StyledGifCardGrid>
   );
 };

@@ -107,7 +107,7 @@ section {
 }
 body {
   line-height: 1;
-  background-color: rgb(202, 202, 202);
+  background-color: #282c34;
   font-family:
     'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
     'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
@@ -142,4 +142,8 @@ table {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+main {
+  padding-top: 80px;
 }

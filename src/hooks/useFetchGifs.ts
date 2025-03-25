@@ -8,6 +8,7 @@ interface UseFetchGifsResult {
   error: string | null;
   loadMore: () => Promise<void>;
   hasMore: boolean;
+  loadAllForSearch: () => Promise<void>;
 }
 
 const useFetchGifs = (apiUrl: string, apiKey: string): UseFetchGifsResult => {
@@ -40,9 +41,29 @@ const useFetchGifs = (apiUrl: string, apiKey: string): UseFetchGifsResult => {
     [apiUrl, apiKey],
   );
 
+  const loadAllForSearch = useCallback(async () => {
+    if (!paginationData) return;
+
+    const totalGifs = paginationData.total_count;
+    const remainingBatches = Math.ceil((totalGifs - allGifs.length) / limit);
+
+    try {
+      setIsLoading(true);
+
+      for (let i = 0; i < remainingBatches; i++) {
+        const nextOffset = offset + (i + 1) * limit;
+        const result = await fetchGifs(apiUrl, apiKey, nextOffset, limit);
+        setAllGifs((prevGifs) => [...prevGifs, ...result.data]);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [apiUrl, apiKey, paginationData, allGifs.length, offset, limit]);
+
   const loadMore = useCallback(async () => {
     if (isLoading || !paginationData) return;
-
     const nextOffset = offset + limit;
     setOffset(nextOffset);
     await fetchData(nextOffset);
@@ -58,10 +79,7 @@ const useFetchGifs = (apiUrl: string, apiKey: string): UseFetchGifsResult => {
     allGifs.length > 0
       ? {
           data: allGifs,
-          pagination: {
-            ...paginationData!,
-            offset,
-          },
+          pagination: paginationData!,
           meta: {
             status: 200,
             msg: 'OK',
@@ -70,7 +88,7 @@ const useFetchGifs = (apiUrl: string, apiKey: string): UseFetchGifsResult => {
         }
       : null;
 
-  return { data, isLoading, error, loadMore, hasMore };
+  return { data, isLoading, error, loadMore, hasMore, loadAllForSearch };
 };
 
 export default useFetchGifs;

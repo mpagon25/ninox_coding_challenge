@@ -9,7 +9,8 @@
     "paths": {
       "@components/*": ["src/components/*"],
       "@hooks/*": ["src/hooks/*"],
-      "@services/*": ["src/services/*"]
+      "@services/*": ["src/services/*"],
+      "@pages/*": ["src/pages/*"]
     },
     "types": ["vitest/globals", "node"]
   }

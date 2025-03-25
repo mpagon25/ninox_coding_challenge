@@ -19,10 +19,21 @@ export const fetchGifs = async (
   apiKey: string,
   offset: number = 0,
   limit: number = 25,
+  searchQuery?: string,
 ): Promise<FetchGifsResults> => {
-  const response = await fetch(
-    `${apiUrl}?api_key=${apiKey}&offset=${offset}&limit=${limit}&rating=g&bundle=messaging_non_clips`,
-  );
+  const params = new URLSearchParams({
+    api_key: apiKey,
+    offset: offset.toString(),
+    limit: limit.toString(),
+    rating: 'g',
+    bundle: 'messaging_non_clips',
+  });
+
+  if (searchQuery) {
+    params.append('q', searchQuery);
+  }
+
+  const response = await fetch(`${apiUrl}?${params}`);
 
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
