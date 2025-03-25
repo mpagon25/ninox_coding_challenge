@@ -1,19 +1,40 @@
 import { GIFObject } from 'giphy-api';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { StyledGif } from './styles';
 import { IoCloseSharp, IoInformationCircleOutline } from 'react-icons/io5';
 import GifModalDetails from '@components/GifModalDetails';
+import { useNavigate } from 'react-router';
 
 type GifModalProps = {
-  onClose: () => void;
   gif: GIFObject;
+  initialShowDetails?: boolean;
 };
 
-export const GifModal = ({ onClose, gif }: GifModalProps) => {
+export const GifModal = ({
+  gif,
+  initialShowDetails = false,
+}: GifModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
-  const [showDetails, setShowDetails] = useState(false);
+  const navigate = useNavigate();
+  const [showDetails, setShowDetails] = useState<boolean>(initialShowDetails);
+
+  const openDetails = useCallback(() => {
+    navigate(`/gif/${gif.id}/details`);
+  }, [navigate, gif.id]);
+
+  const closeDetails = useCallback(() => {
+    navigate(`/gif/${gif.id}`);
+  }, [navigate, gif.id]);
+
+  const handleClose = useCallback(() => {
+    navigate('/');
+  }, [navigate]);
+
+  useEffect(() => {
+    setShowDetails(initialShowDetails);
+  }, [initialShowDetails]);
 
   useEffect(() => {
     previousFocus.current = document.activeElement as HTMLElement;
@@ -22,9 +43,9 @@ export const GifModal = ({ onClose, gif }: GifModalProps) => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         if (showDetails) {
-          setShowDetails(false); // Close details overlay first
+          closeDetails();
         } else {
-          onClose();
+          handleClose();
         }
       }
     };
@@ -34,19 +55,11 @@ export const GifModal = ({ onClose, gif }: GifModalProps) => {
       window.removeEventListener('keydown', handleKeyDown);
       previousFocus.current?.focus();
     };
-  }, [onClose, showDetails]);
-
-  const openDetails = () => {
-    setShowDetails(true);
-  };
-
-  const closeDetails = () => {
-    setShowDetails(false);
-  };
+  }, [handleClose, showDetails, closeDetails]);
 
   return (
     <StyledGif.Backdrop
-      onClick={onClose}
+      onClick={handleClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
@@ -69,7 +82,7 @@ export const GifModal = ({ onClose, gif }: GifModalProps) => {
             </StyledGif.InfoButton>
             <StyledGif.CloseButton
               ref={closeButtonRef}
-              onClick={onClose}
+              onClick={handleClose}
               aria-label="Close modal"
             >
               <IoCloseSharp />

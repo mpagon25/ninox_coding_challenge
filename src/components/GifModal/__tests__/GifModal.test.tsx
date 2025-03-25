@@ -1,7 +1,8 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { GIFObject } from 'giphy-api';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { GifModal } from '../index';
+import { MemoryRouter } from 'react-router';
 
 const mockGif: GIFObject = {
   id: '1',
@@ -11,12 +12,14 @@ const mockGif: GIFObject = {
   },
 } as GIFObject;
 
+const renderWithRouter = (component: React.ReactNode) => {
+  return render(<MemoryRouter>{component}</MemoryRouter>);
+};
+
 describe('GifModal Accessibility', () => {
-  const onClose = vi.fn();
   let previousActiveElement: HTMLElement;
 
   beforeEach(() => {
-    onClose.mockClear();
     previousActiveElement = document.createElement('button');
     document.body.appendChild(previousActiveElement);
     previousActiveElement.focus();
@@ -27,7 +30,7 @@ describe('GifModal Accessibility', () => {
   });
 
   it('should have correct ARIA attributes', () => {
-    render(<GifModal gif={mockGif} onClose={onClose} />);
+    renderWithRouter(<GifModal gif={mockGif} />);
 
     const dialog = screen.getByRole('dialog');
     expect(dialog).toHaveAttribute('aria-modal', 'true');
@@ -35,20 +38,20 @@ describe('GifModal Accessibility', () => {
   });
 
   it('should set initial focus on modal', () => {
-    render(<GifModal gif={mockGif} onClose={onClose} />);
+    renderWithRouter(<GifModal gif={mockGif} />);
 
     const modal = screen.getByRole('dialog').querySelector('[tabindex="-1"]');
     expect(modal).toHaveFocus();
   });
 
   it('should restore focus when modal closes', () => {
-    const { unmount } = render(<GifModal gif={mockGif} onClose={onClose} />);
+    const { unmount } = renderWithRouter(<GifModal gif={mockGif} />);
     unmount();
     expect(document.activeElement).toBe(previousActiveElement);
   });
 
   it('should trap focus within modal using Tab key', () => {
-    render(<GifModal gif={mockGif} onClose={onClose} />);
+    renderWithRouter(<GifModal gif={mockGif} />);
 
     const modal = screen.getByRole('dialog');
     const closeButton = screen.getByRole('button', { name: /close modal/i });
@@ -62,19 +65,18 @@ describe('GifModal Accessibility', () => {
   });
 
   it('should close on Escape key', () => {
-    render(<GifModal gif={mockGif} onClose={onClose} />);
-
+    renderWithRouter(<GifModal gif={mockGif} />);
     fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
-    expect(onClose).toHaveBeenCalled();
+    expect(window.location.pathname).toBe('/');
   });
 
   it('should have accessible close button', () => {
-    render(<GifModal gif={mockGif} onClose={onClose} />);
+    renderWithRouter(<GifModal gif={mockGif} />);
 
     const closeButton = screen.getByRole('button', { name: /close modal/i });
     expect(closeButton).toBeInTheDocument();
 
     fireEvent.click(closeButton);
-    expect(onClose).toHaveBeenCalled();
+    expect(window.location.pathname).toBe('/');
   });
 });

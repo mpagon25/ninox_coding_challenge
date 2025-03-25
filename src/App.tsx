@@ -18,6 +18,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<LandingPage searchQuery={searchQuery} />} />
           <Route path="/gif/:id" element={<GifRoute />} />
+          <Route path="/gif/:id/details" element={<GifRoute showDetails />} />
         </Routes>
       </main>
     </>
