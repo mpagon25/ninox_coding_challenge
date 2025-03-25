@@ -8,23 +8,28 @@ export const StyledGif = {
       'title';
     grid-template-rows: 60% 40%;
     aspect-ratio: 1 / 1;
-    background-color: #272727;
-    border-radius: 10px;
+    background-color: var(--surface-color);
+    border-radius: var(--border-radius);
     overflow: hidden;
     min-width: 160px;
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--box-shadow);
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
 
     &:hover,
     &:focus {
-      transform: scale(1.05);
+      transition:
+        transform 0.4s ease,
+        box-shadow 0.4s ease;
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.7);
     }
 
     ${(props) =>
       props['aria-selected'] &&
       `
-      outline: 3px solid #007bff;
+      outline: 3px solid var(--primary-color); /* Highlight selected card */
       outline-offset: -3px;
     `}
 
@@ -37,6 +42,7 @@ export const StyledGif = {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    background-color: var(--background-color);
   `,
   TitleContainer: styled.div`
     grid-area: title;
@@ -44,13 +50,13 @@ export const StyledGif = {
     align-items: center;
     justify-content: flex-start;
     padding: 0 1rem;
-    background-color: #454545;
+    background-color: var(--primary-color);
     overflow: hidden;
   `,
   Title: styled.p`
     font-size: 0.75rem;
     font-weight: bold;
-    color: white;
+    color: var(--surface-color);
     text-align: left;
     overflow: hidden;
     text-overflow: ellipsis;

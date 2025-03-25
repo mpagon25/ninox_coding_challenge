@@ -8,8 +8,11 @@ export const StyledHeader = {
     width: 100%;
     justify-content: space-between;
     align-items: center;
-    background-color: #282c34;
+    background-color: var(--primary-color);
     z-index: 10;
+    padding: 1rem 2rem;
+    color: var(--surface-color);
+    box-shadow: var(--box-shadow);
   `,
   Content: styled.div`
     width: 100%;
@@ -19,23 +22,23 @@ export const StyledHeader = {
     padding: 0 1rem;
   `,
   Title: styled.h1`
-    color: white;
     font-size: 1.5rem;
+    color: var(--surface-color);
   `,
   SearchInput: styled.input`
-    padding: 0.5rem;
+    padding: 0.5rem 1rem;
     border: none;
-    border-radius: 4px;
-    background-color: #cbcbcb;
-    color: #252525;
+    border-radius: var(--border-radius);
+    background-color: var(--surface-color);
+    color: var(--text-primary);
     font-size: 1rem;
     width: 300px;
     &:focus {
       outline: none;
+      box-shadow: 0 0 0 2px var(--secondary-color);
     }
-
     &::placeholder {
-      color: #5f5f5f;
+      color: var(--text-secondary);
     }
   `,
 };

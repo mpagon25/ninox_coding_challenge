@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import { IoCloseSharp } from 'react-icons/io5';
+import styled from 'styled-components';
 
 export const StyledGif = {
   Backdrop: styled.div`
@@ -10,7 +10,7 @@ export const StyledGif = {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.7);
     z-index: 100;
   `,
   Modal: styled.div`
@@ -18,27 +18,23 @@ export const StyledGif = {
     grid-template-rows: auto minmax(0, 1fr);
     width: min(80vw, 80vh);
     height: min(80vw, 80vh);
-    aspect-ratio: 1;
-    background-color: #272727;
-    border-radius: 10px;
+    background-color: var(--surface-color);
+    border-radius: var(--border-radius);
     overflow: hidden;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-
-    &:focus {
-      outline: none;
-    }
+    box-shadow: var(--box-shadow);
+    outline: none;
   `,
   TopMenu: styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 1rem;
-    background-color: #3d3d40;
-    opacity: 0.8;
+    background-color: var(--primary-color);
     height: 50px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
   `,
   TopMenuTitle: styled.h2`
-    color: white;
+    color: var(--surface-color);
     font-size: 1.5rem;
     margin: 0;
   `,
@@ -50,8 +46,7 @@ export const StyledGif = {
     border: none;
     padding: 4px;
     cursor: pointer;
-    color: white;
-    border-radius: 4px;
+    color: var(--surface-color);
     transition: background-color 0.2s;
 
     &:hover,
@@ -60,8 +55,7 @@ export const StyledGif = {
     }
 
     &:focus {
-      outline: 2px solid #007bff;
-      outline-offset: 2px;
+      outline: 2px solid var(--secondary-color);
     }
   `,
   CloseIcon: styled(IoCloseSharp)`
@@ -71,5 +65,6 @@ export const StyledGif = {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    background-color: var(--background-color);
   `,
 };
