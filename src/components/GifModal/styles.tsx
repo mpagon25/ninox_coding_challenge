@@ -1,4 +1,3 @@
-import { IoCloseSharp } from 'react-icons/io5';
 import styled from 'styled-components';
 
 export const StyledGif = {
@@ -22,6 +21,7 @@ export const StyledGif = {
     border-radius: var(--border-radius);
     overflow: hidden;
     box-shadow: var(--box-shadow);
+    position: relative;
     outline: none;
   `,
   TopMenu: styled.div`
@@ -35,8 +35,12 @@ export const StyledGif = {
   `,
   TopMenuTitle: styled.h2`
     color: var(--surface-color);
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     margin: 0;
+  `,
+  ButtonContainer: styled.div`
+    display: flex;
+    align-items: center;
   `,
   CloseButton: styled.button`
     display: flex;
@@ -47,24 +51,46 @@ export const StyledGif = {
     padding: 4px;
     cursor: pointer;
     color: var(--surface-color);
-    transition: background-color 0.2s;
+    font-size: 2rem;
 
-    &:hover,
-    &:focus {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    &:focus {
-      outline: 2px solid var(--secondary-color);
+    &:hover {
+      color: var(--secondary-color);
     }
   `,
-  CloseIcon: styled(IoCloseSharp)`
+  InfoButton: styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: var(--surface-color);
     font-size: 2rem;
+    margin-right: 8px;
+
+    &:hover {
+      color: var(--secondary-color);
+    }
   `,
   Image: styled.img`
     width: 100%;
     height: 100%;
     object-fit: contain;
     background-color: var(--background-color);
+  `,
+
+  CloseDetailsButton: styled.button`
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--primary-color);
+    color: var(--surface-color);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--secondary-color);
+    }
   `,
 };

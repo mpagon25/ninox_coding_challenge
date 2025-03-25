@@ -1,6 +1,8 @@
 import { GIFObject } from 'giphy-api';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { StyledGif } from './styles';
+import { IoCloseSharp, IoInformationCircleOutline } from 'react-icons/io5';
+import GifModalDetails from '@components/GifModalDetails';
 
 type GifModalProps = {
   onClose: () => void;
@@ -11,6 +13,7 @@ export const GifModal = ({ onClose, gif }: GifModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
+  const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     previousFocus.current = document.activeElement as HTMLElement;
@@ -18,7 +21,11 @@ export const GifModal = ({ onClose, gif }: GifModalProps) => {
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        onClose();
+        if (showDetails) {
+          setShowDetails(false); // Close details overlay first
+        } else {
+          onClose();
+        }
       }
     };
 
@@ -27,7 +34,15 @@ export const GifModal = ({ onClose, gif }: GifModalProps) => {
       window.removeEventListener('keydown', handleKeyDown);
       previousFocus.current?.focus();
     };
-  }, [onClose]);
+  }, [onClose, showDetails]);
+
+  const openDetails = () => {
+    setShowDetails(true);
+  };
+
+  const closeDetails = () => {
+    setShowDetails(false);
+  };
 
   return (
     <StyledGif.Backdrop
@@ -45,19 +60,27 @@ export const GifModal = ({ onClose, gif }: GifModalProps) => {
           <StyledGif.TopMenuTitle id="modal-title">
             {gif.title || 'GIF Preview'}
           </StyledGif.TopMenuTitle>
-          <StyledGif.CloseButton
-            ref={closeButtonRef}
-            onClick={onClose}
-            onMouseEnter={() => closeButtonRef.current?.focus()}
-            aria-label="Close modal"
-          >
-            <StyledGif.CloseIcon />
-          </StyledGif.CloseButton>
+          <StyledGif.ButtonContainer>
+            <StyledGif.InfoButton
+              onClick={openDetails}
+              aria-label="Show details"
+            >
+              <IoInformationCircleOutline />
+            </StyledGif.InfoButton>
+            <StyledGif.CloseButton
+              ref={closeButtonRef}
+              onClick={onClose}
+              aria-label="Close modal"
+            >
+              <IoCloseSharp />
+            </StyledGif.CloseButton>
+          </StyledGif.ButtonContainer>
         </StyledGif.TopMenu>
         <StyledGif.Image
           src={gif.images.original.url}
           alt={gif.title || 'GIF image'}
         />
+        {showDetails && <GifModalDetails gif={gif} onClose={closeDetails} />}
       </StyledGif.Modal>
     </StyledGif.Backdrop>
   );
