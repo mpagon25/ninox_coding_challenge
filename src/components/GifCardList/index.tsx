@@ -19,22 +19,26 @@ export const GifCardList = ({
   isLoading,
 }: GifCardListProps) => {
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
+  const [numCols, setNumCols] = useState<number>(1);
   const gridRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const lastCardRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    gridRef.current?.focus();
-  }, []);
-
-  const getNumColumns = () => {
-    if (!gridRef.current) return 1;
-    const gridWidth = gridRef.current.clientWidth;
-    const cardWidth = 160;
-    const gap = 16;
-    return Math.floor((gridWidth + gap) / (cardWidth + gap));
+  const calculateNumColumns = () => {
+    if (!gridRef.current) return;
+    const gridStyles = window.getComputedStyle(gridRef.current);
+    const gridColumnCount = gridStyles
+      .getPropertyValue('grid-template-columns')
+      .split(' ').length;
+    setNumCols(gridColumnCount);
   };
+
+  useEffect(() => {
+    calculateNumColumns();
+    window.addEventListener('resize', calculateNumColumns);
+    return () => window.removeEventListener('resize', calculateNumColumns);
+  }, []);
 
   useEffect(() => {
     cardRefs.current = cardRefs.current.slice(0, gifs.length);
@@ -90,8 +94,6 @@ export const GifCardList = ({
         return;
       }
     }
-
-    const numCols = getNumColumns();
 
     switch (event.key) {
       case 'ArrowRight': {
