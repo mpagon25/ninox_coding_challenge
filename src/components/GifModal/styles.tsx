@@ -11,6 +11,17 @@ export const StyledGif = {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
     z-index: 100;
+    opacity: 0;
+    animation: fadeIn 0.2s ease-out forwards;
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
   `,
   Modal: styled.div`
     display: grid;
@@ -23,6 +34,20 @@ export const StyledGif = {
     box-shadow: var(--box-shadow);
     position: relative;
     outline: none;
+    transform: scale(0.95);
+    opacity: 0;
+    animation: zoomIn 0.2s ease-out forwards;
+
+    @keyframes zoomIn {
+      from {
+        transform: scale(0.95);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
   `,
   TopMenu: styled.div`
     display: flex;
@@ -53,8 +78,13 @@ export const StyledGif = {
     color: var(--surface-color);
     font-size: 2rem;
 
+    transition:
+      transform 0.2s ease,
+      color 0.2s ease;
+
     &:hover {
       color: var(--secondary-color);
+      transform: scale(1.1);
     }
   `,
   InfoButton: styled.button`
@@ -68,9 +98,13 @@ export const StyledGif = {
     color: var(--surface-color);
     font-size: 2rem;
     margin-right: 8px;
+    transition:
+      transform 0.2s ease,
+      color 0.2s ease;
 
     &:hover {
       color: var(--secondary-color);
+      transform: scale(1.1);
     }
   `,
   Image: styled.img`
@@ -78,6 +112,12 @@ export const StyledGif = {
     height: 100%;
     object-fit: contain;
     background-color: var(--background-color);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+
+    &.loaded {
+      opacity: 1;
+    }
   `,
 
   CloseDetailsButton: styled.button`

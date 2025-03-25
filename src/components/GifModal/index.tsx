@@ -92,6 +92,7 @@ export const GifModal = ({
         <StyledGif.Image
           src={gif.images.original.url}
           alt={gif.title || 'GIF image'}
+          onLoad={(e) => e.currentTarget.classList.add('loaded')}
         />
         {showDetails && <GifModalDetails gif={gif} onClose={closeDetails} />}
       </StyledGif.Modal>
