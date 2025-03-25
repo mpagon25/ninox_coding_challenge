@@ -6,8 +6,8 @@ export const StyledHeader = {
     position: fixed;
     height: 60px;
     width: 100%;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: center;
+
     background-color: var(--primary-color);
     z-index: 10;
     padding: 1rem 2rem;
@@ -16,6 +16,7 @@ export const StyledHeader = {
   `,
   Content: styled.div`
     width: 100%;
+    max-width: 1040px;
     display: flex;
     justify-content: space-between;
     align-items: center;
