@@ -6,9 +6,9 @@ import { GIFObject } from 'giphy-api';
 import useFetchGifs from '@hooks/useFetchGifs';
 import { StyledLandingPageContent } from './styles';
 
-interface LandingPageProps {
+type LandingPageProps = {
   searchQuery: string;
-}
+};
 
 export const LandingPage = ({ searchQuery }: LandingPageProps) => {
   const navigate = useNavigate();

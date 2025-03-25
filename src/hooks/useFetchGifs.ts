@@ -37,26 +37,6 @@ const useFetchGifs = (searchQuery: string = ''): UseFetchGifsResult => {
     }
   }, []);
 
-  // const loadAllForSearch = useCallback(async () => {
-  //   if (!paginationData) return;
-
-  //   const totalGifs = paginationData.total_count;
-  //   const remainingBatches = Math.ceil((totalGifs - allGifs.length) / limit);
-
-  //   try {
-  //     setIsLoading(true);
-
-  //     for (let i = 0; i < remainingBatches; i++) {
-  //       const nextOffset = offset + (i + 1) * limit;
-  //       const result = await fetchGifs(apiUrl, apiKey, nextOffset, limit);
-  //       setAllGifs((prevGifs) => [...prevGifs, ...result.data]);
-  //     }
-  //   } catch (err) {
-  //     setError(err instanceof Error ? err.message : 'An error occurred');
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // }, [apiUrl, apiKey, paginationData, allGifs.length, offset, limit]);
   const loadMore = useCallback(async () => {
     if (isLoading || !paginationData) return;
     const nextOffset = offset + limit;
@@ -69,7 +49,10 @@ const useFetchGifs = (searchQuery: string = ''): UseFetchGifsResult => {
     fetchData(0);
   }, [fetchData]);
 
-  const hasMore = paginationData ? offset < paginationData.total_count : false;
+  const hasMore =
+    !searchQuery.trim() && paginationData
+      ? offset < paginationData.total_count
+      : false;
 
   const data: FetchGifsResults | null =
     allGifs.length > 0
